@@ -44,41 +44,22 @@ if(getCurrentUser()) {
 
   // user class
   class User {
-    constructor(userName,firstName,lastName, email, password) {
+    constructor(userName,password,firstName,lastName, email) {
       this.userName = userName;
-      this.firstName = firstName;
-      this.lastName=lastName,
-      this.email = email;
       this.password = password;
+      this.firstName = firstName;
+      this.lastName= lastName,
+      this.email = email;
     }
   
     getUsername() {
       return this.userName;
     }
+    getPassword(){
+      return this.password;
+    }
   }
   
-  
-  // login functionality
-  let loginForm = document.getElementById("login-page");
-  if(loginForm) loginForm.addEventListener('submit', login);
-  
-  function login(e) {
-    e.preventDefault();
-  
-    let userName = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let user = new User(userName,password);
-  //console.log(user)
-    fetchData("/users/login", user, "POST")
-    .then((data) => {
-      setCurrentUser(data);
-      window.location.href = "note.html";
-    })
-    .catch((err) => {
-      console.log(`Error!!! ${err.message}`)
-    }) 
-  }
-   
   // register functionality
   let regForm = document.getElementById("register-form");
   if(regForm) regForm.addEventListener('submit', register);
@@ -91,8 +72,8 @@ if(getCurrentUser()) {
     let userLname = document.getElementById("Lname").value;
     let Email=document.getElementById("email").value;
     let password = document.getElementById("password").value;
-    let user = new User(userName, userFname, userLname,Email, password);
-    console.log(user)
+    let user = new User(userName, userFname, userLname, Email, password);
+    //console.log(user)
     fetchData("/users/register", user, "POST")
     .then((data) => {
       setCurrentUser(data);
@@ -103,6 +84,30 @@ if(getCurrentUser()) {
       console.log(err);
     })
   }
+    
+  // login functionality
+  let loginForm = document.getElementById("login-page");
+  if(loginForm) loginForm.addEventListener('submit', login);
+  
+  function login(e) {
+    e.preventDefault();
+  
+    let userName = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let user = new User(userName,password);
+    
+  //console.log(user)
+    fetchData("/users/login", user, "POST")
+    .then((data) => {
+      setCurrentUser(data);
+      alert("Successfully logged-in")
+      window.location.href = "note.html";
+    })
+    .catch((err) => {
+      console.log(`Error!!! ${err.message}`)
+    }) 
+  }
+   
   //Note Functionality
   class Note{
     constructor(noteContent) {
@@ -139,7 +144,7 @@ function getallnotes(){
   .then((data)=>{
     console.log(data);
     for(let i=0;i<data.length;i++){
-      notedata.value+=data[i].noteContent;
+      notedata.value=data[i].noteContent;
     }
   })
 }

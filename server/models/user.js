@@ -1,4 +1,4 @@
-const con = require("./db_connect");
+const con = require("./db_connect.js");
 
 // Table Creation 
 async function createTable() {
@@ -28,7 +28,7 @@ async function register(user) {
   if(cUser.length > 0) throw Error("Username already in use");
 
   const sql = `INSERT INTO users (userName,userFname,userLname,Email,password)
-    VALUES ("${user.userName}","${user.firstName}","${user.lastName}","${user.email}", "${user.password}");
+    VALUES ("${user.userName}","${user.firstName}","${user.lastName}","${user.email}","${user.password}");
   `
   await con.query(sql);
   return await login(user);
@@ -36,8 +36,10 @@ async function register(user) {
 // Read User -- login user
 async function login(user) { // {userName: "sda", password: "gsdhjsga"}
   let cUser = await getUser(user); //[{userName: "cathy123", password: "icecream"}]
+  console.log("cUser",cUser)
+  console.log("user::::::::::::::::",user)
   if(!cUser[0]) throw Error("Username not found");
-  if(cUser[0].password !== user.password) throw Error("Password incorrect");
+  if(cUser[0].password !== user.password  ) throw Error("Password incorrect");
 
   return cUser[0];
 }
@@ -64,7 +66,7 @@ async function deleteUser(user) {
 
 // Useful Functions
 async function getUser(user) {
-  let sql;
+let sql;
 
   if(user.userID) {
     sql = `
@@ -77,6 +79,8 @@ async function getUser(user) {
       WHERE userName = "${user.userName}"
   `;
   }
+  console.log(sql)
   return await con.query(sql);  
+  
 }
 module.exports = { getAllUsers, login, register, editUser, deleteUser};
